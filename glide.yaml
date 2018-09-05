@@ -1,0 +1,11 @@
+package: github.com/agungdwiprasetyo/demo-graphql
+import:
+- package: github.com/agungdwiprasetyo/go-utils
+  subpackages:
+  - debug
+- package: github.com/graphql-go/graphql
+  version: ~0.7.6
+- package: github.com/labstack/echo
+  version: 3.2.6
+  subpackages:
+  - '...'
