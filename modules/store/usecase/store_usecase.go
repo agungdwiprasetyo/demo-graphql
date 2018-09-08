@@ -8,7 +8,8 @@ import (
 )
 
 type StoreUsecase interface {
-	GetStore() (graphql.Schema, error)
+	GetAllStore() *graphql.Field
+	GetStoreByID() *graphql.Field
 	SaveStore(*model.Store) error
 }
 
@@ -16,41 +17,18 @@ type storeUsecase struct {
 	read              *query.Query
 	storeQuery        query.Store
 	productQuery      query.Product
-	repo              *repository.Repository
+	write             *repository.Repository
 	storeRepository   repository.Store
 	productRepository repository.Product
 }
 
-func NewStoreUsecase(read *query.Query, repo *repository.Repository) StoreUsecase {
+func NewStoreUsecase(read *query.Query, write *repository.Repository) StoreUsecase {
 	return &storeUsecase{
 		read:              read,
 		storeQuery:        query.NewStoreQuery(read),
 		productQuery:      query.NewProductQuery(read),
-		repo:              repo,
-		storeRepository:   repository.NewStoreRepository(repo),
-		productRepository: repository.NewProductRepository(repo),
+		write:             write,
+		storeRepository:   repository.NewStoreRepository(write),
+		productRepository: repository.NewProductRepository(write),
 	}
-}
-
-func (uc *storeUsecase) SaveStore(data *model.Store) error {
-	uc.repo.StartTransaction()
-
-	err := <-uc.storeRepository.Save(data)
-	if err != nil {
-		uc.repo.Rollback()
-		return err
-	}
-
-	for _, product := range data.Products {
-		tmp := product
-		tmp.StoreID = data.ID
-		err := <-uc.productRepository.Save(&tmp)
-		if err != nil {
-			uc.repo.Rollback()
-			return err
-		}
-	}
-
-	uc.repo.Commit()
-	return nil
 }

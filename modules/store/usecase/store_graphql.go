@@ -5,7 +5,51 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func (uc *storeUsecase) GetStore() (graphql.Schema, error) {
+func (uc *storeUsecase) GetAllStore() *graphql.Field {
+	storeField := make(graphql.Fields)
+	storeField["store_id"] = &graphql.Field{
+		Name: "StoreID",
+		Type: graphql.Int,
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			store := p.Source.(model.Store)
+			return store.ID, nil
+		},
+	}
+
+	storeField["store_name"] = &graphql.Field{
+		Name: "StoreName",
+		Type: graphql.String,
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			store := p.Source.(model.Store)
+			return store.Name, nil
+		},
+	}
+
+	storeField["products"] = &graphql.Field{
+		Name: "Products",
+		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
+			Name:   "Products",
+			Fields: graphql.BindFields(model.Product{}),
+		})),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			store := p.Source.(model.Store)
+			return uc.productQuery.GetByStoreID(store.ID)
+		},
+	}
+
+	return &graphql.Field{
+		Name: "stores",
+		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
+			Name:   "Stores",
+			Fields: storeField,
+		})),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			return uc.storeQuery.FindAll()
+		},
+	}
+}
+
+func (uc *storeUsecase) GetStoreByID() *graphql.Field {
 	storeField := make(graphql.Fields)
 	storeField["store_id"] = &graphql.Field{
 		Name: "StoreID",
@@ -32,12 +76,12 @@ func (uc *storeUsecase) GetStore() (graphql.Schema, error) {
 			Fields: graphql.BindFields(model.Product{}),
 		})),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			storeID := p.Source.(*model.Store).ID
-			return uc.productQuery.GetByStoreID(storeID)
+			store, _ := p.Source.(*model.Store)
+			return uc.productQuery.GetByStoreID(store.ID)
 		},
 	}
 
-	responseData := &graphql.Field{
+	return &graphql.Field{
 		Name: "store",
 		Type: graphql.NewObject(graphql.ObjectConfig{
 			Name:   "Store",
@@ -53,15 +97,4 @@ func (uc *storeUsecase) GetStore() (graphql.Schema, error) {
 			return uc.storeQuery.GetByID(id)
 		},
 	}
-
-	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: graphql.NewObject(graphql.ObjectConfig{
-			Name: "RootQuery",
-			Fields: graphql.Fields{
-				"store": responseData,
-			},
-		}),
-	})
-
-	return schema, err
 }

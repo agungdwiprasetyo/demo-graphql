@@ -14,6 +14,6 @@ func NewStoreHandler(storeUsecase usecase.StoreUsecase) *StoreHandler {
 }
 
 func (h *StoreHandler) Mount(router *echo.Group) {
-	router.GET("", h.GetAllStore)
+	router.GET("", h.InitGraphQL)
 	router.POST("", h.SaveStore)
 }

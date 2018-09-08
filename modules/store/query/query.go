@@ -12,6 +12,7 @@ type Query struct {
 
 type (
 	Store interface {
+		FindAll() ([]model.Store, error)
 		GetByID(int) (*model.Store, error)
 	}
 
