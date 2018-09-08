@@ -2,18 +2,8 @@ package usecase
 
 import (
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/model"
-	"github.com/agungdwiprasetyo/demo-graphql/modules/store/query"
 	"github.com/graphql-go/graphql"
 )
-
-type storeUsecase struct {
-	storeQuery   query.Store
-	productQuery query.Product
-}
-
-func NewStoreUsecase(storeQuery query.Store, productQuery query.Product) StoreUsecase {
-	return &storeUsecase{storeQuery, productQuery}
-}
 
 func (uc *storeUsecase) GetStore() (graphql.Schema, error) {
 	storeField := make(graphql.Fields)

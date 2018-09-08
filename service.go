@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 
+	"github.com/agungdwiprasetyo/demo-graphql/config"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/presenter"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/query"
+	"github.com/agungdwiprasetyo/demo-graphql/modules/store/repository"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/usecase"
 	"github.com/labstack/echo"
 )
@@ -14,10 +16,11 @@ type Service struct {
 }
 
 func NewService() *Service {
-	storeQuery := query.NewStoreQuery()
-	productQuery := query.NewProductQuery()
+	db := config.GetPostgresConnection()
+	read := query.NewQuery(db)
+	write := repository.NewRepository(db)
 
-	uc := usecase.NewStoreUsecase(storeQuery, productQuery)
+	uc := usecase.NewStoreUsecase(read, write)
 
 	service := new(Service)
 	service.StoreHandler = presenter.NewStoreHandler(uc)
