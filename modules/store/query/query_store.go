@@ -31,7 +31,7 @@ func (st *StoreQuery) FindAll() ([]model.Store, error) {
 	return stores, nil
 }
 
-func (st *StoreQuery) GetByID(id int) (*model.Store, error) {
+func (st *StoreQuery) FindByID(id int) (*model.Store, error) {
 	store := new(model.Store)
 	query := `SELECT id, name FROM stores WHERE id = $1`
 	err := st.db.QueryRow(query, id).Scan(&store.ID, &store.Name)

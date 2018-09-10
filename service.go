@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/agungdwiprasetyo/demo-graphql/config"
+	"github.com/agungdwiprasetyo/demo-graphql/middleware"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/presenter"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/query"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/repository"
@@ -29,6 +30,8 @@ func NewService() *Service {
 
 func (serv *Service) ServeHTTP(port int) {
 	app := echo.New()
+
+	app.Use(middleware.SetCORS())
 
 	storeGroup := app.Group("/graphql/store")
 	serv.StoreHandler.Mount(storeGroup)

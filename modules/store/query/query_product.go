@@ -12,9 +12,28 @@ func NewProductQuery(read *Query) *ProductQuery {
 	return product
 }
 
-func (st *ProductQuery) GetByStoreID(storeID int) ([]model.Product, error) {
+func (p *ProductQuery) FindAll() ([]model.Product, error) {
+	query := `SELECT id, store_id, name FROM products`
+	rows, err := p.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	products := make([]model.Product, 0)
+	for rows.Next() {
+		var product model.Product
+		if err := rows.Scan(&product.ID, &product.StoreID, &product.Name); err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+func (p *ProductQuery) FindByStoreID(storeID int) ([]model.Product, error) {
 	query := `SELECT id, name FROM products WHERE store_id = $1`
-	rows, err := st.db.Query(query, storeID)
+	rows, err := p.db.Query(query, storeID)
 	if err != nil {
 		return nil, err
 	}
@@ -29,4 +48,14 @@ func (st *ProductQuery) GetByStoreID(storeID int) ([]model.Product, error) {
 	}
 
 	return products, nil
+}
+
+func (p *ProductQuery) FindByID(productID int) (*model.Product, error) {
+	var product model.Product
+	query := `SELECT id, store_id, name FROM products WHERE id = $1`
+	err := p.db.QueryRow(query, productID).Scan(&product.ID, &product.StoreID, &product.Name)
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
 }

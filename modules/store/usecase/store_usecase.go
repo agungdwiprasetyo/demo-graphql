@@ -10,6 +10,8 @@ import (
 type StoreUsecase interface {
 	GetAllStore() *graphql.Field
 	GetStoreByID() *graphql.Field
+	GetAllProduct() *graphql.Field
+	GetProductByID() *graphql.Field
 	SaveStore(*model.Store) error
 }
 

@@ -13,11 +13,13 @@ type Query struct {
 type (
 	Store interface {
 		FindAll() ([]model.Store, error)
-		GetByID(int) (*model.Store, error)
+		FindByID(int) (*model.Store, error)
 	}
 
 	Product interface {
-		GetByStoreID(int) ([]model.Product, error)
+		FindAll() ([]model.Product, error)
+		FindByStoreID(int) ([]model.Product, error)
+		FindByID(int) (*model.Product, error)
 	}
 )
 
