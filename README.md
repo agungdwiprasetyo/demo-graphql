@@ -1,19 +1,19 @@
 # Demo GraphQL in Go
 
-### Install dependencies
+## Install dependencies
 Using `glide` (https://github.com/Masterminds/glide)
 
 ```sh
 $ glide install
 ```
 
-### Build & Run
+## Build & Run
 
 ```sh
 $ go build && ./demo-graphql
 ```
 
-### Test
+## Test
 
 ```sh
 GET http://localhost:8080/graphql/store?query={store(store_id:5){store_id,store_name,products{product_id,product_name}}} 
@@ -41,7 +41,7 @@ Response:
 }
 ```
 
-### GraphQL Usage
+## GraphQL Usage
 
 <table>
     <tr>
@@ -124,4 +124,4 @@ Get Detail Product:
             </pre>
         </td>
     </tr>
- </table>
+</table>
