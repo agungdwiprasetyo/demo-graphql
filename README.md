@@ -40,3 +40,88 @@ Response:
     }
 }
 ```
+
+### GraphQL Usage
+
+<table>
+    <tr>
+        <th>Action</th>
+        <th>Query</th>
+    </tr>
+    <tr>
+        <td>
+Get All Store:
+        </td>
+        <td>
+            <pre>
+{
+    get_all_stores{
+        store_id,
+        store_name,
+        products{
+            product_id,
+            product_name
+        }
+    }
+}
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+Get Detail Store:
+        </td>
+        <td>
+            <pre>
+{
+    get_store(store_id:1){
+        store_id,
+        store_name,
+        products{
+            product_id,
+            product_name
+        }
+    }
+}
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+Get All Product:
+        </td>
+        <td>
+            <pre>
+{
+    get_all_product{
+        product_id,
+        product_name,
+        store{
+            store_id,
+            store_name
+        }
+    }
+}
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>
+Get Detail Product:
+        </td>
+        <td>
+            <pre>
+{
+    get_product(product_id:2){
+        product_id,
+        product_name,
+        store{
+            store_id,
+            store_name
+        }
+    }
+}
+            </pre>
+        </td>
+    </tr>
+ </table>
