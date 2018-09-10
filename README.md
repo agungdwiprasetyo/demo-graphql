@@ -43,6 +43,8 @@ Response:
 
 ## GraphQL Usage
 
+Here is how you can use the queries:
+
 <table>
     <tr>
         <th>Action</th>
