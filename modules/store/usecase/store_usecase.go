@@ -3,10 +3,11 @@ package usecase
 import (
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/model"
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/query"
-	"github.com/agungdwiprasetyo/demo-graphql/modules/store/repository"
+	repositoryDecorator "github.com/agungdwiprasetyo/demo-graphql/modules/store/repository"
 	"github.com/graphql-go/graphql"
 )
 
+// StoreUsecase abstraction
 type StoreUsecase interface {
 	GetAllStore() *graphql.Field
 	GetStoreByID() *graphql.Field
@@ -19,18 +20,18 @@ type storeUsecase struct {
 	read              *query.Query
 	storeQuery        query.Store
 	productQuery      query.Product
-	write             *repository.Repository
-	storeRepository   repository.Store
-	productRepository repository.Product
+	repository        *repositoryDecorator.Repository
+	storeRepository   repositoryDecorator.Store
+	productRepository repositoryDecorator.Product
 }
 
-func NewStoreUsecase(read *query.Query, write *repository.Repository) StoreUsecase {
+func NewStoreUsecase(read *query.Query, repository *repositoryDecorator.Repository) StoreUsecase {
 	return &storeUsecase{
 		read:              read,
 		storeQuery:        query.NewStoreQuery(read),
 		productQuery:      query.NewProductQuery(read),
-		write:             write,
-		storeRepository:   repository.NewStoreRepository(write),
-		productRepository: repository.NewProductRepository(write),
+		repository:        repository,
+		storeRepository:   repositoryDecorator.NewStoreRepository(repository),
+		productRepository: repositoryDecorator.NewProductRepository(repository),
 	}
 }

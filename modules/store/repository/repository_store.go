@@ -12,7 +12,6 @@ type StoreRepository struct {
 func NewStoreRepository(write *Repository) *StoreRepository {
 	store := new(StoreRepository)
 	store.db = write.db
-	store.tx = write.tx
 	return store
 }
 

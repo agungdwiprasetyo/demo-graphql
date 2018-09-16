@@ -5,11 +5,11 @@ import (
 )
 
 func (uc *storeUsecase) SaveStore(data *model.Store) error {
-	uc.write.StartTransaction()
+	uc.repository.StartTransaction()
 
 	err := <-uc.storeRepository.Save(data)
 	if err != nil {
-		uc.write.Rollback()
+		uc.repository.Rollback()
 		return err
 	}
 
@@ -18,11 +18,11 @@ func (uc *storeUsecase) SaveStore(data *model.Store) error {
 		tmp.StoreID = data.ID
 		err := <-uc.productRepository.Save(&tmp)
 		if err != nil {
-			uc.write.Rollback()
+			uc.repository.Rollback()
 			return err
 		}
 	}
 
-	uc.write.Commit()
+	uc.repository.Commit()
 	return nil
 }

@@ -13,7 +13,6 @@ type ProductRepository struct {
 func NewProductRepository(write *Repository) *ProductRepository {
 	store := new(ProductRepository)
 	store.db = write.db
-	store.tx = write.tx
 	return store
 }
 
@@ -22,6 +21,7 @@ func (repo *ProductRepository) Save(data *model.Product) <-chan error {
 
 	go func() {
 		defer close(output)
+
 		var (
 			stmt *sqlx.Stmt
 			err  error

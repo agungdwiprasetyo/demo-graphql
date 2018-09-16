@@ -5,20 +5,24 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Repository struct {
-	db *sqlx.DB
-	tx *sqlx.Tx
-}
+// Abstraction method
 
 type (
+	// Store abstraction
 	Store interface {
 		Save(*model.Store) <-chan error
 	}
 
+	// Product abstraction
 	Product interface {
 		Save(*model.Product) <-chan error
 	}
 )
+
+// Repository parent domain
+type Repository struct {
+	db *sqlx.DB
+}
 
 var tx *sqlx.Tx
 
@@ -27,7 +31,11 @@ func NewRepository(db *sqlx.DB) *Repository {
 }
 
 func (repo *Repository) StartTransaction() {
-	tx, _ = repo.db.Beginx()
+	t, err := repo.db.Beginx()
+	if err != nil {
+		panic(err)
+	}
+	tx = t
 }
 
 func (repo *Repository) Rollback() {
