@@ -5,8 +5,8 @@ import (
 )
 
 type Store struct {
-	ID       int       `json:"store_id"`
-	Name     string    `json:"store_name"`
+	ID       int       `json:"store_id" required:"true"`
+	Name     string    `json:"store_name" required:"true"`
 	Products []Product `json:"products,omitempty"`
 }
 

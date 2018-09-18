@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// InitGraphQL endpoint -> GET /graphql/store?query={your_graphql_query}
+// InitGraphQL endpoint -> GET /store/graphql?query={your_graphql_query}
 func (h *StoreHandler) InitGraphQL(c echo.Context) error {
 	query := c.QueryParam("query")
 	// debug.Println("query:", query)
@@ -39,7 +39,7 @@ func (h *StoreHandler) InitGraphQL(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-// SaveStore endpoint -> POST /graphql/store
+// SaveStore endpoint -> POST /store/add
 func (h *StoreHandler) SaveStore(c echo.Context) error {
 	var payload model.Store
 	if err := c.Bind(&payload); err != nil {

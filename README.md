@@ -16,7 +16,7 @@ $ go build && ./demo-graphql
 ## Test
 
 ```sh
-GET http://localhost:8080/graphql/store?query={store(store_id:5){store_id,store_name,products{product_id,product_name}}} 
+GET http://localhost:8080/store/graphql?query={store(store_id:5){store_id,store_name,products{product_id,product_name}}} 
 ```
 
 Response:

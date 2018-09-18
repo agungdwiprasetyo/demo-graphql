@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/agungdwiprasetyo/demo-graphql/config"
 	"github.com/agungdwiprasetyo/demo-graphql/middleware"
@@ -13,29 +14,36 @@ import (
 )
 
 type Service struct {
-	StoreHandler *presenter.StoreHandler
+	conf         config.Config
+	StoreService *presenter.StoreHandler
 }
 
-func NewService() *Service {
-	db := config.GetPostgresConnection()
-	read := query.NewQuery(db)
-	write := repository.NewRepository(db)
+func NewService(conf config.Config) *Service {
+	queryDecorator := query.NewQuery(conf.LoadReadDB())
+	repositoryDecorator := repository.NewRepository(conf.LoadWriteDB())
 
-	uc := usecase.NewStoreUsecase(read, write)
+	storeUsecase := usecase.NewStoreUsecase(queryDecorator, repositoryDecorator)
 
 	service := new(Service)
-	service.StoreHandler = presenter.NewStoreHandler(uc)
+	service.conf = conf
+	service.StoreService = presenter.NewStoreHandler(storeUsecase)
 	return service
 }
 
 func (serv *Service) ServeHTTP(port int) {
 	app := echo.New()
-
 	app.Use(middleware.SetCORS())
 
-	storeGroup := app.Group("/graphql/store")
-	serv.StoreHandler.Mount(storeGroup)
+	storeGroup := app.Group("/store")
+	serv.StoreService.MountGraphQL(storeGroup)
+	serv.StoreService.MountREST(storeGroup)
 
 	appPort := fmt.Sprintf(":%d", port)
-	app.Logger.Fatal(app.Start(appPort))
+	if err := app.Start(appPort); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (serv *Service) ServeGRPC(port int) {
+	// incoming
 }
