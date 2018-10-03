@@ -6,17 +6,17 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type ProductRepository struct {
+type productRepository struct {
 	Repository
 }
 
-func NewProductRepository(write *Repository) *ProductRepository {
-	store := new(ProductRepository)
+func NewProductRepository(write *Repository) Product {
+	store := new(productRepository)
 	store.db = write.db
 	return store
 }
 
-func (repo *ProductRepository) Save(data *model.Product) <-chan error {
+func (repo *productRepository) Save(data *model.Product) <-chan error {
 	output := make(chan error)
 
 	go func() {

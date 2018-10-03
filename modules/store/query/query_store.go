@@ -4,17 +4,17 @@ import (
 	"github.com/agungdwiprasetyo/demo-graphql/modules/store/model"
 )
 
-type StoreQuery struct {
+type storeQuery struct {
 	Query
 }
 
-func NewStoreQuery(read *Query) *StoreQuery {
-	store := new(StoreQuery)
+func NewStoreQuery(read *Query) Store {
+	store := new(storeQuery)
 	store.db = read.db
 	return store
 }
 
-func (st *StoreQuery) FindAll() ([]model.Store, error) {
+func (st *storeQuery) FindAll() ([]model.Store, error) {
 	stores := make([]model.Store, 0)
 	query := `SELECT id, name FROM stores`
 	rows, err := st.db.Query(query)
@@ -31,7 +31,7 @@ func (st *StoreQuery) FindAll() ([]model.Store, error) {
 	return stores, nil
 }
 
-func (st *StoreQuery) FindByID(id int) (*model.Store, error) {
+func (st *storeQuery) FindByID(id int) (*model.Store, error) {
 	store := new(model.Store)
 	query := `SELECT id, name FROM stores WHERE id = $1`
 	err := st.db.QueryRow(query, id).Scan(&store.ID, &store.Name)
